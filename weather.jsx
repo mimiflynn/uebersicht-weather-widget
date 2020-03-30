@@ -2,7 +2,7 @@ import { css } from 'uebersicht'
 
 /***********************Options***********************/
 // Dark Sky Key https://darksky.net/dev/account
-const KEY = 'your_dark_sky_key'
+const KEY = ''
 const LANG = 'en' // language: en for English, zh for Chinese
 // weather data units
 const UNITS = 'auto'
@@ -160,6 +160,14 @@ export const updateState = (event, previousState) => {
   }
 }
 
+export const getUsHour = (hour) => {
+  if (hour >= 13) {
+    return hour - 12;
+  } else {
+    return hour
+  }
+}
+
 export const render = ({ loading, data, city, showMore, error }, dispatch) => {
   return error ? (
     <div className={errorWrapper}>
@@ -194,9 +202,11 @@ export const render = ({ loading, data, city, showMore, error }, dispatch) => {
                 {data.hourly.data.map((hourData, index) => {
                   const date = new Date(hourData.time * 1000)
                   const hour = date.getHours()
+                  const ampm = hour >= 12 ? 'p' : 'a'
+                  const usHour = getUsHour(hour)
                   return index < 6 ? (
                     <div key={hourData.time} className={everyHour}>
-                      <p className={everyHourTime}>{hour}</p>
+                      <p className={everyHourTime}>{usHour}{ampm}</p>
                       <p className={everyHourTemp}>
                         {hourData.temperature.toFixed(1)}
                       </p>
